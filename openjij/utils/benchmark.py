@@ -176,7 +176,7 @@ def se_success_probability(
         response (openjij.Response): response from solver (or sampler).
         solutions (list[int]): true solutions.
     Returns:
-        float: Success probability's standard error.
+        float: Success probability's standard error. = stddev/sqrt(N)
 
         * When measure_with_energy is False, success is defined as getting the same state as solutions.
         * When measure_with_energy is True, success is defined as getting a state which energy is below reference energy
@@ -192,12 +192,12 @@ def se_success_probability(
             sampled_states = response.samples()
             se_suc_prob = np.std(
                 [1 if dict(state) in solutions else 0 for state in sampled_states]
-            )
+            )/np.sqrt(len(sampled_states))
         else:
             sampled_states = response.states
             se_suc_prob = np.std(
                 [1 if list(state) in solutions else 0 for state in sampled_states]
-            )
+            )/np.sqrt(len(sampled_states))
 
     return se_suc_prob
 
